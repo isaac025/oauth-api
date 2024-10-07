@@ -5,27 +5,29 @@ module Server where
 import App
 import Configuration
 import Control.Monad.Reader (asks)
-import Lucid (Html, a_, h1_, href_, p_)
+import Data.Text (Text)
+import Lucid (Html)
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Pages
 import Servant
 import Servant.HTML.Lucid (HTML)
 
-type API = "login" :> Get '[HTML] (Html ())
+type API =
+    "login" :> Get '[HTML] (Html ())
+        :<|> "callback" :> QueryParam "code" Text :> Get '[JSON] Token
 
 loginHandler :: OAuth (Html ())
 loginHandler = do
     OAuthConfig{..} <- asks oauthConfig
     let googleAuthURL = oauthUrl <> "?client_id=" <> clientId <> "&redirect_uri=" <> redirectUri <> "&response_type=code" <> "&scope=openid%20email"
-    pure $
-        base $ do
-            h1_ "Login"
-            p_ "Click the link to log in via Google:"
-            a_ [href_ googleAuthURL] "Login with Google"
+    pure $ loginButton googleAuthURL
+
+callbackHandler :: Maybe Text -> OAuth Token
+callbackHandler = pure . Token
 
 server :: ServerT API OAuth
-server = loginHandler
+server = loginHandler :<|> callbackHandler
 
 api :: Proxy API
 api = Proxy
