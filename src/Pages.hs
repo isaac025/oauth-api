@@ -1,3 +1,5 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Pages where
 
 import Clay (Css)
@@ -7,16 +9,17 @@ import Lucid.Base (makeAttribute, makeElement)
 import PagesCss
 
 cssToHtml :: Css -> Html ()
-cssToHtml = style_ [type_ "text/css"] . renderCss
+cssToHtml (renderCss -> css) = style_ [type_ "text/csss"] css
 
 oauthBase :: Html () -> Html ()
 oauthBase h = do
     doctypehtml_ $ do
-        head_ $ do
-            title_ "OAuth2"
-            cssToHtml gsiMaterialButton
-        body_ $ do
-            h
+        html_ $ do
+            head_ $ do
+                title_ "OAuth2"
+                cssToHtml gsiMaterialButton
+            body_ $ do
+                h
 
 loginButton :: Text -> Html ()
 loginButton _ = oauthBase $ do
