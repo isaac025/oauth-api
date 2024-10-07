@@ -1,15 +1,14 @@
-{-# LANGUAGE ViewPatterns #-}
-
 module Pages where
 
 import Clay (Css)
 import Data.Text (Text)
 import Lucid
 import Lucid.Base (makeAttribute, makeElement)
+import Lucid.Htmx (hxGet_)
 import PagesCss
 
-cssToHtml :: Css -> Html ()
-cssToHtml (renderCss -> css) = style_ [type_ "text/csss"] css
+cssToHtml :: [Css] -> Html ()
+cssToHtml css = style_ [type_ "text/css"] (foldMap renderCss css)
 
 oauthBase :: Html () -> Html ()
 oauthBase h = do
@@ -17,13 +16,13 @@ oauthBase h = do
         html_ $ do
             head_ $ do
                 title_ "OAuth2"
-                cssToHtml gsiMaterialButton
+                cssToHtml cssList
             body_ $ do
                 h
 
 loginButton :: Text -> Html ()
-loginButton _ = oauthBase $ do
-    button_ [class_ "gsi-material-button"] $ do
+loginButton aurl = oauthBase $ do
+    button_ [class_ "gsi-material-button", hxGet_ aurl] $ do
         div_ [class_ "gsi-material-button-state"] ""
         div_ [class_ "gsi-material-button-content-wrapper"] $ do
             div_ [class_ "gsi-material-button-icon"] $ do
