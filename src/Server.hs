@@ -20,7 +20,7 @@ type API =
 loginHandler :: OAuth (Html ())
 loginHandler = do
     OAuthConfig{..} <- asks oauthConfig
-    let googleAuthURL = oauthUrl <> "?client_id=" <> clientId <> "&redirect_uri=" <> redirectUri <> "&response_type=code" <> "&scope=openid%20email"
+    let googleAuthURL = oauthUrl <> "?response_type=code" <> "&client_id=" <> clientId <> "&redirect_uri=" <> redirectUri <> "&scope=openid%20email"
     pure $ loginButton googleAuthURL
 
 callbackHandler :: Maybe Text -> OAuth Token

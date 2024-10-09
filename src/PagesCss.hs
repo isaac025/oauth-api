@@ -28,7 +28,6 @@ cssList =
 gsiMaterialButton :: Css
 gsiMaterialButton =
     ".gsi-material-button" ? do
-        userSelect none
         backgroundColor white
         border (px 1) solid "#747775"
         borderRadius (px 4) (px 4) (px 4) (px 4)
@@ -39,7 +38,8 @@ gsiMaterialButton =
         height (px 40)
         letterSpacing (px 0.25)
         outline none (px 0) transparent
-        overflow hidden
+        overflow visible
+        zIndex 1 -- ensure button is on top
         padding (px 0) (px 12) (px 0) (px 12)
         textAlign center
         transitions

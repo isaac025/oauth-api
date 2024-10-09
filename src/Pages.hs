@@ -4,7 +4,8 @@ import Clay (Css)
 import Data.Text (Text)
 import Lucid
 import Lucid.Base (makeAttribute, makeElement)
-import Lucid.Htmx (hxGet_)
+
+-- import Lucid.Htmx (hxBoost_, hxTrigger_)
 import PagesCss
 
 cssToHtml :: [Css] -> Html ()
@@ -17,18 +18,20 @@ oauthBase h = do
             head_ $ do
                 title_ "OAuth2"
                 cssToHtml cssList
+                script_ [src_ "https://unpkg.com/htmx.org@2.0.3", integrity_ "sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq", crossorigin_ "anonymous"] ("" :: Text)
             body_ $ do
                 h
 
 loginButton :: Text -> Html ()
-loginButton aurl = oauthBase $ do
-    button_ [class_ "gsi-material-button", hxGet_ aurl] $ do
-        div_ [class_ "gsi-material-button-state"] ""
-        div_ [class_ "gsi-material-button-content-wrapper"] $ do
-            div_ [class_ "gsi-material-button-icon"] $ do
-                googleSvg_
-            span_ [class_ "gsi-material-button-contents"] "Sign in with Google"
-            span_ [style_ "display: none;"] "Sign in with Google"
+loginButton oauthurl = oauthBase $ do
+    a_ [href_ oauthurl] $ do
+        button_ [class_ "gsi-material-button", type_ "submit"] $ do
+            div_ [class_ "gsi-material-button-state"] ""
+            div_ [class_ "gsi-material-button-content-wrapper"] $ do
+                div_ [class_ "gsi-material-button-icon"] $ do
+                    googleSvg_
+                span_ [class_ "gsi-material-button-contents"] "Sign in with Google"
+                span_ [style_ "display: none;"] "Sign in with Google"
   where
     googleSvg_ :: Html ()
     googleSvg_ =
